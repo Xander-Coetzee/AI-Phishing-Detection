@@ -72,10 +72,23 @@ phishing_keywords = [
     "warning",
 ]
 
-# Load the trained model and TF-IDF vectorizer
+# Load the model and TF-IDF vectorizer
+print("Loading model and TF-IDF vectorizer...")
+import os
+
+# Get the directory of the current script
+script_dir = os.path.dirname(os.path.abspath(__file__))
+
+# Load the model and vectorizer using absolute paths
+model_path = os.path.join(script_dir, "phishing_detection_rf_model.pkl")
+tfidf_path = os.path.join(script_dir, "tfidf_vectorizer.pkl")
+
+print(f"Loading model from: {model_path}")
+print(f"Loading TF-IDF vectorizer from: {tfidf_path}")
+
 try:
-    model = joblib.load("phishing_detection_rf_model.pkl")
-    tfidf = joblib.load("tfidf_vectorizer.pkl")
+    model = joblib.load(model_path)
+    tfidf = joblib.load(tfidf_path)
     model_loaded = True
 
     # Log model information
@@ -191,9 +204,7 @@ def predict_email(email_text):
         print("\nTF-IDF Features:")
         print(f"Feature names: {tfidf.get_feature_names_out()}")
         if app.debug:
-if app.debug:
-if app.debug:
-    print(f"Feature values shape: {tfidf_features.shape}")
+            print(f"Feature values shape: {tfidf_features.shape}")
 
         # Get all feature names the model expects
         all_feature_names = (
@@ -585,6 +596,12 @@ def analyze():
                 print("Step 4: Creating features...")
                 # Create TF-IDF features
                 tfidf_features = tfidf.transform([processed_text])
+
+                # Log TF-IDF features
+                print("\nTF-IDF Features:")
+                print(f"Feature names: {tfidf.get_feature_names_out()}")
+                if app.debug:
+                    print(f"Feature values shape: {tfidf_features.shape}")
 
                 # Get all feature names the model expects
                 all_feature_names = (
